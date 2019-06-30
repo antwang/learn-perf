@@ -4,16 +4,17 @@ const HtmlWebpackPlugin = require("html-webpack-plugin");
 const StyleLintPlugin = require("stylelint-webpack-plugin");
 const SpritesmithPlugin = require("webpack-spritesmith");
 const DebugPlugin = require("debugtool-webpack-plugin");
+const AddAssetHtmlPlugin = require("add-asset-html-webpack-plugin");
 const { templateFunction } = require("./util");
+const HardSourceWebpackPlugin = require("hard-source-webpack-plugin");
+const webpack = require("webpack");
 
 const baseConf = {
   entry: { app: path.resolve(__dirname, "../src/app.js") },
   output: {
     filename: "js/[name].js",
-    path: path.resolve(__dirname, "../dist"),
-    publicPath: ""
+    path: path.resolve(__dirname, "../dist")
   },
-  mode: "none",
   resolve: {
     modules: ["../node_modules", "../src/assets/generated"]
   },
@@ -37,10 +38,19 @@ const baseConf = {
   },
   plugins: [
     new VueLoaderPlugin(),
-    new DebugPlugin({ enable: true }),
+    new DebugPlugin({ enable: false }),
     new HtmlWebpackPlugin({
       template: path.resolve(__dirname, "../public/index.html"),
       title: "项目模板"
+    }),
+    new webpack.DllReferencePlugin({
+      manifest: require("../dll/vue.manifest.json")
+    }),
+    // 将dll文件添加到html中，必须放在htmlwebpackPlugin后面
+    new AddAssetHtmlPlugin({
+      filepath: path.resolve(__dirname, "../dll/*.dll.js"),
+      outputPath: "js",
+      publicPath: "js"
     }),
     new StyleLintPlugin({
       files: ["src/**/*.{vue, css, sass, scss}", "!src/assets/generated/"]
@@ -68,7 +78,8 @@ const baseConf = {
       apiOptions: {
         cssImageRef: "~sprite.png"
       }
-    })
+    }),
+    new HardSourceWebpackPlugin()
   ]
 };
 module.exports = baseConf;

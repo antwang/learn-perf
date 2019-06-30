@@ -7,6 +7,9 @@
 </template>
 <script>
 export default {
+  created() {
+    console.log("lskfjlsj");
+  },
   data() {
     return {
       count: 0
@@ -21,7 +24,7 @@ export default {
 </script>
 <style lang="scss">
 h2 {
-  font-size: 20px;
+  font-size: 10px;
   color: #000;
   background: #ff0;
   text-align: center;

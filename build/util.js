@@ -1,5 +1,5 @@
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-
+const path = require("path");
 // 配置URLLoader
 const configureURLLoader = env => {
   let rules = [
@@ -45,30 +45,32 @@ const configureCSSLoader = env => {
 // 配置babelloader
 const configureBabelLoader = (modern, browserlist) => {
   let options = {
-    babelrc: false,
-    presets: [
-      [
-        "@babel/preset-env",
-        {
-          modules: false,
-          corejs: "3.0.1",
-          useBuiltIns: "usage",
-          targets: {
-            browsers: browserlist
-          }
-        }
-      ]
-    ]
-  };
-  let babelLoader = {
-    test: /\.js$/,
-    exclude: /node_modules/,
-    loader: "babel-loader"
+    cacheDirectory: true
   };
 
   if (modern) {
-    babelLoader.options = options;
+    options = Object.assign(options, {
+      babelrc: false,
+      presets: [
+        [
+          "@babel/preset-env",
+          {
+            modules: false,
+            corejs: "3.0.1",
+            useBuiltIns: "usage",
+            targets: {
+              browsers: browserlist
+            }
+          }
+        ]
+      ]
+    });
   }
+  let babelLoader = {
+    test: /\.js$/,
+    exclude: /node_modules/,
+    use: ["thread-loader", { loader: "babel-loader", options }]
+  };
   return babelLoader;
 };
 

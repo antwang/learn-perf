@@ -9,7 +9,6 @@ const {
 const ModernBuildPlugin = require("./modernBuildPlugin");
 const CleanWebpackPlugin = require("clean-webpack-plugin");
 const ExtractTextPlugin = require("extract-text-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
 const OptimizeCSSPlugin = require("optimize-css-assets-webpack-plugin");
 
 module.exports = function(
@@ -29,11 +28,7 @@ module.exports = function(
     browserslist = null;
   }
   let filename = "js/[name].js";
-  let plugins = [
-    new TerserPlugin(),
-    new OptimizeCSSPlugin(),
-    new webpack.HashedModuleIdsPlugin()
-  ];
+  let plugins = [new OptimizeCSSPlugin(), new webpack.HashedModuleIdsPlugin()];
   let modern = buildMode === "common" ? false : true;
   let postfix = buildMode === "common" ? "" : `-${buildMode}`;
   let rules = [
@@ -73,23 +68,13 @@ module.exports = function(
     plugins.push(new CleanWebpackPlugin());
   }
   const prodConf = {
-    mode: "none",
+    mode: "production",
     output: {
       filename
     },
     module: { rules },
     plugins,
     optimization: {
-      splitChunks: {
-        cacheGroups: {
-          vendors: {
-            test: /[\\/]node_modules[\\/]/,
-            name: "vendors",
-            chunks: "all",
-            reuseExistingChunk: true
-          }
-        }
-      },
       runtimeChunk: "single"
     }
   };
