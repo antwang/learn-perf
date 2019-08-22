@@ -53,7 +53,7 @@ const baseConf = {
       publicPath: "js"
     }),
     new StyleLintPlugin({
-      files: ["src/**/*.{vue, css, sass, scss}", "!src/assets/generated/"]
+      files: ["src/**/*.{vue,css,sass,scss}"]
     }),
     new SpritesmithPlugin({
       src: {
